@@ -2,6 +2,7 @@ package com.prs.dribbleapi.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +32,7 @@ public class Company implements Serializable{
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "company")
-    private List<Location> locations;
+    private Set<Location> locations;
 
     public Integer getCompanyId() {
         return companyId;
@@ -65,11 +66,11 @@ public class Company implements Serializable{
         this.mainPhoneNumber = mainPhoneNumber;
     }
 
-    public List<Location> getLocations() {
+    public Set<Location> getLocations() {
         return locations;
     }
 
-    public void setLocations(final List<Location> locations) {
+    public void setLocations(final Set<Location> locations) {
         this.locations = locations;
     }
 }

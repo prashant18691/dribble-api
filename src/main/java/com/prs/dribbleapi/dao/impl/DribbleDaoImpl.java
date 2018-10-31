@@ -1,5 +1,6 @@
 package com.prs.dribbleapi.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,13 +18,9 @@ public class DribbleDaoImpl implements DribbleDao{
     @PersistenceContext
     private EntityManager em;
 
-    @Override public List<Object[]> search(final SearchRequest searchRequest) {
-        String sql = "select c.companyname,c.description as company_desc, c.mainphonenumber,l.state,l.phonenumber,"
-                + "l.description as loc_desc,l.province,l.country,\n"
-                + "j.jobtitle,j.jobtype,j.availability_type,j.charge,j.description as job_desc,j.explevel,j.skills,j"
-                + ".postedon,j.currency\n"
-                + "from company c  LEFT OUTER JOIN location_details l on c.companyid = l.companyid LEFT OUTER JOIN "
-                + "job_details j on l.locationid=j.locationid";
+    @Override public List<Company> search(final SearchRequest searchRequest) {
+        String sql = "select distinct c from Company c join fetch c.locations l join "
+                    + "fetch l.jobs j";
 
         StringBuilder filters = addFilters(searchRequest);
 
@@ -31,8 +28,8 @@ public class DribbleDaoImpl implements DribbleDao{
             sql+=" where "+filters.toString();
         }
 
-        Query query = em.createNativeQuery(sql);
-        List<Object[]> companyList = query.getResultList();
+        Query query = em.createQuery(sql, Company.class);
+        List<Company> companyList = query.getResultList();
         return companyList;
     }
 
@@ -41,21 +38,21 @@ public class DribbleDaoImpl implements DribbleDao{
         if (searchRequest!=null){
             filters = new StringBuilder("");
             if (searchRequest.getAvailabilityCriteria()!=null){
-                filters.append("j.availability_type in "+searchRequest.getAvailabilityCriteria());
+                filters.append("j.availability in "+searchRequest.getAvailabilityCriteria());
             }
             if (searchRequest.getExperienceCriteria()!=null){
                 if (filters.length()>0){
-                    filters.append(" and j.explevel = "+searchRequest.getExperienceCriteria());
+                    filters.append(" and j.expLevel = "+searchRequest.getExperienceCriteria());
                 }
                 else
-                    filters.append(" j.explevel = "+searchRequest.getExperienceCriteria());
+                    filters.append(" j.expLevel = "+searchRequest.getExperienceCriteria());
             }
             if (searchRequest.getJobType()!=null){
                 if (filters.length()>0){
-                    filters.append(" and j.jobtype like %"+searchRequest.getJobType()+"%");
+                    filters.append(" and j.jobType like %"+searchRequest.getJobType()+"%");
                 }
                 else
-                    filters.append(" j.jobtype like %"+searchRequest.getJobType()+"%");
+                    filters.append(" j.jobType like %"+searchRequest.getJobType()+"%");
             }
             if (searchRequest.getSkillsCriteria()!=null){
                 if (filters.length()>0){
@@ -67,10 +64,10 @@ public class DribbleDaoImpl implements DribbleDao{
             }
             if (searchRequest.getJobTitle()!=null){
                 if (filters.length()>0){
-                    filters.append(" and j.jobtitle like %"+searchRequest.getJobTitle()+"%");
+                    filters.append(" and j.jobTitle like %"+searchRequest.getJobTitle()+"%");
                 }
                 else
-                    filters.append(" j.jobtitle like %"+searchRequest.getJobTitle()+"%");
+                    filters.append(" j.jobTitle like %"+searchRequest.getJobTitle()+"%");
             }
             if (searchRequest.getLocation()!=null){
                 String filterValue = "%"+searchRequest.getLocation()+"%";

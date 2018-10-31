@@ -2,6 +2,7 @@ package com.prs.dribbleapi.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,7 +40,7 @@ public class Location implements Serializable{
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "location")
-    private List<Job> jobs;
+    private Set<Job> jobs;
 
     Integer getLocationId() {
         return locationId;
@@ -81,11 +82,11 @@ public class Location implements Serializable{
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Job> getJobs() {
+    public Set<Job> getJobs() {
         return jobs;
     }
 
-    public void setJobs(final List<Job> jobs) {
+    public void setJobs(final Set<Job> jobs) {
         this.jobs = jobs;
     }
 

@@ -1,5 +1,6 @@
 package com.prs.dribbleapi.vo;
 
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 
@@ -8,6 +9,7 @@ public class CompanyVO {
     private String companyName;
     private String description;
     private String mainPhoneNumber;
+    private List<LocationVO> locationVOS;
 
     public CompanyVO(final String companyName, final String description, final String mainPhoneNumber) {
         this.companyName = companyName;
@@ -37,5 +39,13 @@ public class CompanyVO {
 
     public void setMainPhoneNumber(final String mainPhoneNumber) {
         this.mainPhoneNumber = mainPhoneNumber;
+    }
+
+    public List<LocationVO> getLocationVOS() {
+        return locationVOS;
+    }
+
+    public void setLocationVOS(final List<LocationVO> locationVOS) {
+        this.locationVOS = locationVOS;
     }
 }

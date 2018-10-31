@@ -18,8 +18,8 @@ public class DribbleServiceImpl implements DribbleService{
     private DribbleDao dribbleDao;
 
     @Override public List<DribbleVO> search(final SearchRequest searchRequest) {
-        List<Object[]> list = dribbleDao.search(searchRequest);
-        return DribbleHelper.transform(list);
+
+        return DribbleHelper.transform(dribbleDao.search(searchRequest));
     }
 
     @Override public void save(final Company company) {

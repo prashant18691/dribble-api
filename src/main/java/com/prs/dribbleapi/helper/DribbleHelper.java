@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.xml.bind.ValidationException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -69,12 +70,12 @@ public class DribbleHelper {
     public static void validateAndEnrichPostRequest(Company request) throws ValidationException {
         if (request==null)
             throw new ValidationException("Request body is empty");
-        List<Location> locations = request.getLocations();
+        Set<Location> locations = request.getLocations();
         if (CollectionUtils.isEmpty(locations)){
             throw new ValidationException("locations cannot be empty");
         }
             for (Location eachLocation:locations){
-                List<Job> jobs = eachLocation.getJobs();
+                Set<Job> jobs = eachLocation.getJobs();
                 for (Job eachJob : jobs){
                     eachJob.setAvailability(String.valueOf(validateAvailabilityType(eachJob.getAvailabilityType())));
 
@@ -127,37 +128,40 @@ public class DribbleHelper {
         return Availability.valueOf(availabilityType.toUpperCase()).getValue();
     }
 
-    public static List<DribbleVO> transform(final List<Object[]> list) {
+    public static List<DribbleVO> transform(List<Company> list) {
         List<DribbleVO> dribbleVOS = null;
-        if (!CollectionUtils.isEmpty(list)){
+        if (!CollectionUtils.isEmpty(list)) {
             dribbleVOS = new ArrayList<>();
-            for (Object[] objectArray : list){
+            for (Company company : list) {
                 DribbleVO dribbleVO = new DribbleVO();
                 CompanyVO companyVO = null;
-                JobVO jobVO = null;
-                LocationVO locationVO = null;
-                if (objectArray.length>=2)
-                 companyVO = new CompanyVO(String.valueOf(objectArray[0]),String.valueOf(objectArray[1]),
-                        String.valueOf(objectArray[2]));
-                if (objectArray.length>=7)
-                 locationVO = new LocationVO(String.valueOf(objectArray[3]),String.valueOf(objectArray[4]),
-                        String.valueOf(objectArray[5]),String.valueOf(objectArray[6]),String.valueOf(objectArray[7]));
-                if (objectArray.length>=16)
-                 jobVO = new JobVO( String.valueOf(objectArray[8]),String.valueOf(objectArray[9]),Availability
-                         .availabilityMap
-                        .get(((BigDecimal)objectArray[10]).intValue()),String.valueOf(Integer.parseInt(String.valueOf
-                         (objectArray[11]))
-                         /100),
-                         String
-                         .valueOf
-                         (objectArray[12]),
-                        ExperienceLevel.experienceLevelMap.get(((BigDecimal)(objectArray[13])).intValue()),String
-                         .valueOf
-                                        (objectArray[14]),
-                        String.valueOf(objectArray[15]), String.valueOf(objectArray[16]));
+                companyVO = new CompanyVO(company.getCompanyName(), company.getDescription(),
+                        company.getMainPhoneNumber());
+                if (!CollectionUtils.isEmpty(company.getLocations())) {
+                    List<LocationVO> locationVOS = new ArrayList<>();
+                    for (Location location : company.getLocations()) {
+                        LocationVO locationVO = new LocationVO(location.getState(), location.getProvince(),
+                                location.getCountry(), location.getDescription(), location.getPhoneNumber());
+                        if (!CollectionUtils.isEmpty(location.getJobs())) {
+                            List<JobVO> jobVOS = new ArrayList<>();
+                            for (Job job : location.getJobs()) {
+                                JobVO jobVO = new JobVO(job.getJobTitle(), job.getJobType(),
+                                        Availability.availabilityMap
+                                                .get(Integer.parseInt(job.getAvailability())), job.getCharge(),
+                                        job.getDescription
+                                                (),
+                                        ExperienceLevel.experienceLevelMap.get(Integer.parseInt(job.getExpLevel())),
+                                        job.getSkills(), String.valueOf(job.getPostedOn()), job.getCurrency());
+                                jobVOS.add(jobVO);
+                            }
+                            locationVO.setJobVOS(jobVOS);
+                        }
+                        locationVOS.add(locationVO);
+                    }
+                    companyVO.setLocationVOS(locationVOS);
+                }
+
                 dribbleVO.setCompany(companyVO);
-                dribbleVO.setLocation(locationVO);
-                dribbleVO.setJob(jobVO);
                 dribbleVOS.add(dribbleVO);
             }
         }
