@@ -4,10 +4,10 @@ import java.util.Map;
 import org.apache.kafka.common.serialization.Serializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prs.dribbleapi.dto.Company;
+import com.prs.dribbleapi.vo.CompanyVO;
 
 
-public class JSONSerializer implements Serializer<Company> {
+public class JSONSerializer implements Serializer<CompanyVO> {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     @Override
@@ -19,7 +19,7 @@ public class JSONSerializer implements Serializer<Company> {
         // TODO Auto-generated method stub
     }
     @Override
-    public byte[] serialize(String arg0, Company arg1) {
+    public byte[] serialize(String arg0, CompanyVO arg1) {
         byte[] value = null;
         try {
             value = objectMapper.writeValueAsString(arg1).getBytes();

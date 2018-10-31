@@ -80,7 +80,7 @@ public class DribbleHelper {
                 for (JobVO eachJob : jobs){
                     eachJob.setAvailability(validateAvailabilityType(eachJob.getAvailabilityType()));
 
-                    if (eachJob.getAvailabilityType().equals("1")) {
+                    if (eachJob.getAvailabilityType().equalsIgnoreCase("HOURLY")) {
                         String charge = eachJob.getCharge();
                         if(charge==null)
                             throw new ValidationException("charge cannot be null for availabilityType : HOURLY");
@@ -88,7 +88,7 @@ public class DribbleHelper {
                         eachJob.setCharge(String.valueOf(simplifyAmount));
                     }
 
-                    if (eachJob.getAvailabilityType().equals("2"))
+                    if (eachJob.getAvailabilityType().equalsIgnoreCase("PARTTIME"))
                         eachJob.setCharge(String.valueOf(2000));
                     else
                         eachJob.setCharge(String.valueOf(4000));
