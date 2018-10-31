@@ -1,10 +1,8 @@
 package com.prs.dribbleapi.dto;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 
@@ -23,7 +20,6 @@ public class Company implements Serializable{
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_COMPANY")
     private Integer companyId;
     @NotNull
-    @Column(unique = true)
     private String companyName;
     @NotNull
     private String description;

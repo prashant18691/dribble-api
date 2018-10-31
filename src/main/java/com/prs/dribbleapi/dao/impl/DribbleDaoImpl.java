@@ -1,6 +1,5 @@
 package com.prs.dribbleapi.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
