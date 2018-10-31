@@ -11,23 +11,24 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import com.prs.dribbleapi.dto.Company;
+import com.prs.dribbleapi.vo.CompanyVO;
 
 
 @Configuration
 public class DribbleKafkaConfig {
 
     @Bean
-    public ProducerFactory<String, Company> producerFactory(){
+    public ProducerFactory<String, CompanyVO> producerFactory(){
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         config.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JavaSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JSONSerializer.class);
         return new DefaultKafkaProducerFactory<>(config);
     }
 
     @Bean
-    public KafkaTemplate<String, Company> kafkaTemplate(){
+    public KafkaTemplate<String, CompanyVO> kafkaTemplate(){
         return new KafkaTemplate<>(producerFactory());
     }
 

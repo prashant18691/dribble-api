@@ -42,6 +42,19 @@ public class Location implements Serializable{
             mappedBy = "location")
     private Set<Job> jobs;
 
+    public Location() {
+    }
+
+    public Location(@NotNull final String state, @NotNull final String province,
+            @NotNull final String country, @NotNull final String description,
+            @NotNull final String phoneNumber) {
+        this.state = state;
+        this.province = province;
+        this.country = country;
+        this.description = description;
+        this.phoneNumber = phoneNumber;
+    }
+
     Integer getLocationId() {
         return locationId;
     }

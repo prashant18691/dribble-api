@@ -50,11 +50,23 @@ public class Job implements Serializable{
     @JoinColumn(name = "locationid", nullable = false)
     private Location location;
 
-    @Transient
-    private String availabilityType;
+    public Job() {
+    }
 
-    @Transient
-    private String experience;
+    public Job(@NotNull final String jobTitle, @NotNull final String jobType,
+            @NotNull final String availability, @NotNull final String charge,
+            @NotNull final String currency, @NotNull final String description,
+            @NotNull final String expLevel, @NotNull final Date postedOn, @NotNull final String skills) {
+        this.jobTitle = jobTitle;
+        this.jobType = jobType;
+        this.availability = availability;
+        this.charge = charge;
+        this.currency = currency;
+        this.description = description;
+        this.expLevel = expLevel;
+        this.postedOn = postedOn;
+        this.skills = skills;
+    }
 
     public String getJobTitle() {
         return jobTitle;
@@ -112,18 +124,6 @@ public class Job implements Serializable{
         this.skills = skills;
     }
 
-    public String getAvailabilityType() {
-        return availabilityType;
-    }
-
-    public void setAvailabilityType(final String availabilityType) {
-        this.availabilityType = availabilityType;
-    }
-
-    public String getExperience() {
-        return experience;
-    }
-
     public Integer getJobId() {
         return jobId;
     }
@@ -138,10 +138,6 @@ public class Job implements Serializable{
 
     public void setLocation(final Location location) {
         this.location = location;
-    }
-
-    public void setExperience(final String experience) {
-        this.experience = experience;
     }
 
     public String getAvailability() {

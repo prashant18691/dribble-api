@@ -1,5 +1,6 @@
 package com.prs.dribbleapi.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.prs.dribbleapi.dto.Availability;
 import com.prs.dribbleapi.dto.ExperienceLevel;
@@ -9,26 +10,32 @@ public class JobVO {
 
     private String jobTitle;
     private String jobType;
-    private Availability availability;
+    private String availabilityType;
     private String charge;
     private String description;
-    private ExperienceLevel expLevel;
+    private String experience;
     private String skills;
     private String postedOn;
     private String currency;
 
-    public JobVO(final String jobTitle, final String jobType, final Availability availability, final String charge,
+    private int availability;
+    private int expLevel;
+
+    public JobVO() {
+    }
+
+    public JobVO(final String jobTitle, final String jobType, final String availabilityType, final String charge,
             final String description,
-            final ExperienceLevel expLevel, final String skills, final String postedOn, final String currency) {
+            final String experience, final String skills, final String currency, final String postedOn) {
         this.jobTitle = jobTitle;
         this.jobType = jobType;
-        this.availability = availability;
+        this.availabilityType = availabilityType;
         this.charge = charge;
         this.description = description;
-        this.expLevel = expLevel;
+        this.experience = experience;
         this.skills = skills;
-        this.postedOn = postedOn;
         this.currency = currency;
+        this.postedOn = postedOn;
     }
 
     public String getJobTitle() {
@@ -47,12 +54,12 @@ public class JobVO {
         this.jobType = jobType;
     }
 
-    public Availability getAvailability() {
-        return availability;
+    public String getAvailabilityType() {
+        return availabilityType;
     }
 
-    public void setAvailability(final Availability availability) {
-        this.availability = availability;
+    public void setAvailabilityType(final String availabilityType) {
+        this.availabilityType = availabilityType;
     }
 
     public String getCharge() {
@@ -71,12 +78,12 @@ public class JobVO {
         this.description = description;
     }
 
-    public ExperienceLevel getExpLevel() {
-        return expLevel;
+    public String getExperience() {
+        return experience;
     }
 
-    public void setExpLevel(final ExperienceLevel expLevel) {
-        this.expLevel = expLevel;
+    public void setExperience(final String experience) {
+        this.experience = experience;
     }
 
     public String getSkills() {
@@ -101,5 +108,21 @@ public class JobVO {
 
     public void setCurrency(final String currency) {
         this.currency = currency;
+    }
+    @JsonIgnore
+    public int getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(final int availability) {
+        this.availability = availability;
+    }
+    @JsonIgnore
+    public int getExpLevel() {
+        return expLevel;
+    }
+
+    public void setExpLevel(final int expLevel) {
+        this.expLevel = expLevel;
     }
 }

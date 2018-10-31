@@ -9,7 +9,10 @@ public class CompanyVO {
     private String companyName;
     private String description;
     private String mainPhoneNumber;
-    private List<LocationVO> locationVOS;
+    private List<LocationVO> locations;
+
+    public CompanyVO() {
+    }
 
     public CompanyVO(final String companyName, final String description, final String mainPhoneNumber) {
         this.companyName = companyName;
@@ -41,11 +44,11 @@ public class CompanyVO {
         this.mainPhoneNumber = mainPhoneNumber;
     }
 
-    public List<LocationVO> getLocationVOS() {
-        return locationVOS;
+    public List<LocationVO> getLocations() {
+        return locations;
     }
 
-    public void setLocationVOS(final List<LocationVO> locationVOS) {
-        this.locationVOS = locationVOS;
+    public void setLocations(final List<LocationVO> locations) {
+        this.locations = locations;
     }
 }

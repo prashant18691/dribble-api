@@ -34,6 +34,16 @@ public class Company implements Serializable{
             mappedBy = "company")
     private Set<Location> locations;
 
+    public Company(@NotNull final String companyName, @NotNull final String description,
+            @NotNull final String mainPhoneNumber) {
+        this.companyName = companyName;
+        this.description = description;
+        this.mainPhoneNumber = mainPhoneNumber;
+    }
+
+    public Company() {
+    }
+
     public Integer getCompanyId() {
         return companyId;
     }

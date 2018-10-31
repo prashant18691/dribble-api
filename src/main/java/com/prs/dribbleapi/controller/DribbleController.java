@@ -31,7 +31,10 @@ import com.prs.dribbleapi.dto.Location;
 import com.prs.dribbleapi.helper.DribbleHelper;
 import com.prs.dribbleapi.request.SearchRequest;
 import com.prs.dribbleapi.service.DribbleService;
+import com.prs.dribbleapi.vo.CompanyVO;
 import com.prs.dribbleapi.vo.DribbleVO;
+import com.prs.dribbleapi.vo.JobVO;
+import com.prs.dribbleapi.vo.LocationVO;
 
 
 @RestController
@@ -42,11 +45,11 @@ public class DribbleController {
     private DribbleService dribbleService;
 
     @Autowired
-    private KafkaTemplate<String, Company> kafkaTemplate;
+    private KafkaTemplate<String, CompanyVO> kafkaTemplate;
     private static final String TOPIC = "kafka_dribble_topic";
 
     @PostMapping("/save")
-    public ResponseEntity save(@RequestBody Company company){
+    public ResponseEntity save(@RequestBody CompanyVO company){
         try {
             DribbleHelper.validateAndEnrichPostRequest(company);
             dribbleService.save(company);
@@ -83,11 +86,11 @@ public class DribbleController {
             while (rowIterator.hasNext()){
                 Row row = rowIterator.next();
                 Iterator<Cell> cellIterator = row.cellIterator();
-                Company company = DribbleHelper.createCompanyObject(cellIterator);
-                Location location = DribbleHelper.createLocationObject(cellIterator);
-                Job job = DribbleHelper.createJobObject(cellIterator);
-                Set<Location> locationList = new HashSet<>();
-                Set<Job> jobList = new HashSet<>();
+                CompanyVO company = DribbleHelper.createCompanyObject(cellIterator);
+                LocationVO location = DribbleHelper.createLocationObject(cellIterator);
+                JobVO job = DribbleHelper.createJobObject(cellIterator);
+                List<LocationVO> locationList = new ArrayList<>();
+                List<JobVO> jobList = new ArrayList<>();
                 jobList.add(job);
                 location.setJobs(jobList);
                 locationList.add(location);
@@ -108,7 +111,7 @@ public class DribbleController {
 
 
 
-    private String publish(Company company) throws ValidationException {
+    private String publish(CompanyVO company) throws ValidationException {
         DribbleHelper.validateAndEnrichPostRequest(company);
         kafkaTemplate.send(TOPIC, company);
         return "Published successfully";

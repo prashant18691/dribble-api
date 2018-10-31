@@ -11,7 +11,10 @@ public class LocationVO {
     private String country;
     private String description;
     private String phoneNumber;
-    private List<JobVO> jobVOS;
+    private List<JobVO> jobs;
+
+    public LocationVO() {
+    }
 
     public LocationVO(final String state, final String province, final String country, final String description,
             final String phoneNumber) {
@@ -62,11 +65,11 @@ public class LocationVO {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<JobVO> getJobVOS() {
-        return jobVOS;
+    public List<JobVO> getJobs() {
+        return jobs;
     }
 
-    public void setJobVOS(final List<JobVO> jobVOS) {
-        this.jobVOS = jobVOS;
+    public void setJobs(final List<JobVO> jobs) {
+        this.jobs = jobs;
     }
 }

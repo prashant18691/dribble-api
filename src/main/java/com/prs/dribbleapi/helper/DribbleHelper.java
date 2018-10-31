@@ -3,6 +3,7 @@ package com.prs.dribbleapi.helper;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -67,19 +68,19 @@ public class DribbleHelper {
         }
     }
 
-    public static void validateAndEnrichPostRequest(Company request) throws ValidationException {
+    public static void validateAndEnrichPostRequest(CompanyVO request) throws ValidationException {
         if (request==null)
             throw new ValidationException("Request body is empty");
-        Set<Location> locations = request.getLocations();
+        List<LocationVO> locations = request.getLocations();
         if (CollectionUtils.isEmpty(locations)){
             throw new ValidationException("locations cannot be empty");
         }
-            for (Location eachLocation:locations){
-                Set<Job> jobs = eachLocation.getJobs();
-                for (Job eachJob : jobs){
-                    eachJob.setAvailability(String.valueOf(validateAvailabilityType(eachJob.getAvailabilityType())));
+            for (LocationVO eachLocation:locations){
+                List<JobVO> jobs = eachLocation.getJobs();
+                for (JobVO eachJob : jobs){
+                    eachJob.setAvailability(validateAvailabilityType(eachJob.getAvailabilityType()));
 
-                    if (eachJob.getAvailability().equals("1")) {
+                    if (eachJob.getAvailabilityType().equals("1")) {
                         String charge = eachJob.getCharge();
                         if(charge==null)
                             throw new ValidationException("charge cannot be null for availabilityType : HOURLY");
@@ -87,15 +88,12 @@ public class DribbleHelper {
                         eachJob.setCharge(String.valueOf(simplifyAmount));
                     }
 
-                    if (eachJob.getAvailability().equals("2"))
+                    if (eachJob.getAvailabilityType().equals("2"))
                         eachJob.setCharge(String.valueOf(2000));
                     else
                         eachJob.setCharge(String.valueOf(4000));
-                    eachJob.setExpLevel(String.valueOf(validateExpLevel(eachJob.getExperience())));
-                    eachJob.setLocation(eachLocation);
-                    eachJob.setPostedOn(new Date());
+                    eachJob.setExpLevel(validateExpLevel(eachJob.getExperience()));
                 }
-                eachLocation.setCompany(request);
             }
     }
 
@@ -128,7 +126,7 @@ public class DribbleHelper {
         return Availability.valueOf(availabilityType.toUpperCase()).getValue();
     }
 
-    public static List<DribbleVO> transform(List<Company> list) {
+    public static List<DribbleVO> transformEntityToVO(List<Company> list) {
         List<DribbleVO> dribbleVOS = null;
         if (!CollectionUtils.isEmpty(list)) {
             dribbleVOS = new ArrayList<>();
@@ -147,20 +145,20 @@ public class DribbleHelper {
                             for (Job job : location.getJobs()) {
                                 JobVO jobVO = new JobVO(job.getJobTitle(), job.getJobType(),
                                         Availability.availabilityMap
-                                                .get(Integer.parseInt(job.getAvailability())), job.getCharge(),
-                                        job.getDescription
-                                                (),
-                                        ExperienceLevel.experienceLevelMap.get(Integer.parseInt(job.getExpLevel())),
-                                        job.getSkills(), String.valueOf(job.getPostedOn()), job.getCurrency());
+                                                .get(Integer.parseInt(job.getAvailability
+                                                        ())).name()
+                                        , job.getCharge(), job.getDescription(),
+                                        ExperienceLevel.experienceLevelMap.get(Integer.parseInt(job
+                                                .getExpLevel())).name(),
+                                        job.getSkills(), job.getCurrency(), String.valueOf(job.getPostedOn()));
                                 jobVOS.add(jobVO);
                             }
-                            locationVO.setJobVOS(jobVOS);
+                            locationVO.setJobs(jobVOS);
                         }
                         locationVOS.add(locationVO);
                     }
-                    companyVO.setLocationVOS(locationVOS);
+                    companyVO.setLocations(locationVOS);
                 }
-
                 dribbleVO.setCompany(companyVO);
                 dribbleVOS.add(dribbleVO);
             }
@@ -168,8 +166,8 @@ public class DribbleHelper {
         return dribbleVOS;
     }
 
-    public static Company createCompanyObject(final Iterator<Cell> cellIterator) {
-        Company company = new Company();
+    public static CompanyVO createCompanyObject(final Iterator<Cell> cellIterator) {
+        CompanyVO company = new CompanyVO();
         if (cellIterator.hasNext())
             company.setCompanyName(String.valueOf(cellIterator.next()));
         if (cellIterator.hasNext())
@@ -180,8 +178,8 @@ public class DribbleHelper {
         return company;
     }
 
-    public static Location createLocationObject(final Iterator<Cell> cellIterator) {
-        Location location = new Location();
+    public static LocationVO createLocationObject(final Iterator<Cell> cellIterator) {
+        LocationVO location = new LocationVO();
         if (cellIterator.hasNext()){
             location.setState(String.valueOf(cellIterator.next()));
         }
@@ -200,8 +198,8 @@ public class DribbleHelper {
         return location;
     }
 
-    public static Job createJobObject(final Iterator<Cell> cellIterator) {
-        Job job = new Job();
+    public static JobVO createJobObject(final Iterator<Cell> cellIterator) {
+        JobVO job = new JobVO();
         if (cellIterator.hasNext()){
             job.setJobTitle(String.valueOf(cellIterator.next()));
         }
@@ -227,7 +225,35 @@ public class DribbleHelper {
         if (cellIterator.hasNext()){
             job.setCurrency(String.valueOf(cellIterator.next()));
         }
-        job.setPostedOn(new Date());
         return job;
+    }
+
+    public static Company transformVOToEntity(final CompanyVO companyVO) {
+                Company company = new Company(companyVO.getCompanyName(), companyVO.getDescription(),
+                        companyVO.getMainPhoneNumber());
+                if (!CollectionUtils.isEmpty(companyVO.getLocations())) {
+                    Set<Location> locationList = new HashSet<>();
+                    for (LocationVO locationVO : companyVO.getLocations()) {
+                        Location location = new Location(locationVO.getState(), locationVO.getProvince(),
+                                locationVO.getCountry(), locationVO.getDescription(), locationVO.getPhoneNumber());
+                        location.setCompany(company);
+                        if (!CollectionUtils.isEmpty(locationVO.getJobs())) {
+                            Set<Job> jobList = new HashSet<>();
+                            for (JobVO jobVO : locationVO.getJobs()) {
+                                Job job = new Job(jobVO.getJobTitle(), jobVO.getJobType(),
+                                        String.valueOf(jobVO.getAvailability())
+                                        , jobVO.getCharge(), jobVO.getCurrency(),jobVO.getDescription(),
+                                        String.valueOf(jobVO.getExpLevel()),new Date(),
+                                        jobVO.getSkills());
+                                job.setLocation(location);
+                                jobList.add(job);
+                            }
+                            location.setJobs(jobList);
+                        }
+                        locationList.add(location);
+                    }
+                    company.setLocations(locationList);
+                }
+        return company;
     }
 }

@@ -8,6 +8,7 @@ import com.prs.dribbleapi.dto.Company;
 import com.prs.dribbleapi.helper.DribbleHelper;
 import com.prs.dribbleapi.request.SearchRequest;
 import com.prs.dribbleapi.service.DribbleService;
+import com.prs.dribbleapi.vo.CompanyVO;
 import com.prs.dribbleapi.vo.DribbleVO;
 
 
@@ -19,10 +20,10 @@ public class DribbleServiceImpl implements DribbleService{
 
     @Override public List<DribbleVO> search(final SearchRequest searchRequest) {
 
-        return DribbleHelper.transform(dribbleDao.search(searchRequest));
+        return DribbleHelper.transformEntityToVO(dribbleDao.search(searchRequest));
     }
 
-    @Override public void save(final Company company) {
-         dribbleDao.save(company);
+    @Override public void save(final CompanyVO company) {
+         dribbleDao.save(DribbleHelper.transformVOToEntity(company));
     }
 }
