@@ -1,9 +1,6 @@
 package com.prs.dribbleapi.vo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.prs.dribbleapi.dto.Availability;
-import com.prs.dribbleapi.dto.ExperienceLevel;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class JobVO {
@@ -18,8 +15,8 @@ public class JobVO {
     private String postedOn;
     private String currency;
 
-    private int availability;
-    private int expLevel;
+    private Integer availability;
+    private Integer expLevel;
 
     public JobVO() {
     }
@@ -109,20 +106,20 @@ public class JobVO {
     public void setCurrency(final String currency) {
         this.currency = currency;
     }
-    @JsonIgnore
-    public int getAvailability() {
+
+    public Integer getAvailability() {
         return availability;
     }
 
-    public void setAvailability(final int availability) {
+    public void setAvailability(final Integer availability) {
         this.availability = availability;
     }
-    @JsonIgnore
-    public int getExpLevel() {
+
+    public Integer getExpLevel() {
         return expLevel;
     }
 
-    public void setExpLevel(final int expLevel) {
+    public void setExpLevel(final Integer expLevel) {
         this.expLevel = expLevel;
     }
 }

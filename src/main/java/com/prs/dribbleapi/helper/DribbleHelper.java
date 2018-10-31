@@ -173,7 +173,8 @@ public class DribbleHelper {
         if (cellIterator.hasNext())
             company.setDescription(String.valueOf(cellIterator.next()));
         if (cellIterator.hasNext())
-            company.setMainPhoneNumber(String.valueOf(cellIterator.next()));
+            company.setMainPhoneNumber(String.valueOf(new BigDecimal(String.valueOf(cellIterator.next()))
+                    .toBigInteger()));
 
         return company;
     }
@@ -184,7 +185,8 @@ public class DribbleHelper {
             location.setState(String.valueOf(cellIterator.next()));
         }
         if (cellIterator.hasNext()){
-            location.setPhoneNumber(String.valueOf(cellIterator.next()));
+            location.setPhoneNumber(String.valueOf(new BigDecimal(String.valueOf(cellIterator.next()))
+                    .toBigInteger()));
         }
         if (cellIterator.hasNext()){
             location.setDescription(String.valueOf(cellIterator.next()));
