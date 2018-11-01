@@ -11,5 +11,6 @@
 3. Create Kafka topic using **bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic            kafka_dribble_topic**.
 4. Start the server which is available at http://localhost:8081/dribble/. You can also access the api using swagger link at http://localhost:8081/swagger-ui.html#!/Dribble_API_Rest_Controller/.
 5. DB design, Json Data and data excel file are available under \src\main\resources\templates\(dbDesign.JPG,jsonData.json, data.xlsx).
+6. http://localhost:8081/dribble/save/ endpoint saves data directly to db while http://localhost:8081/dribble/upload endpoint pushes the uploaded data to Kafka topic which is consequently consumed by https://github.com/prashant18691/dribble_kafka_consumer and saved to db.
  
 
