@@ -1,0 +1,76 @@
+{
+	"companyName":"Paypal",
+	"description":"Paypal Jobs",
+	"mainPhoneNumber":"+4434556478",
+	"locations":[
+		{
+			"state":"Tamil Nadu",
+			"province": "Chennai",
+			"country": "India",
+			"description": "Chennai location",
+			"phoneNumber": "+4434556479",
+			"jobs": [
+				{
+					"jobTitle":"Senior Software Engineer",
+					"jobType":"IT",
+					"availabilityType":"fulltime",
+					"charge":"0",
+					"description":"job for sse",
+					"experience":"INTERMEDIATE",
+					"skills":"Java, Hibernate, Spring, Kafka",
+					"currency" : "USD" 
+				},
+				{
+					"jobTitle":"Software Engineer",
+					"jobType":"IT",
+					"availabilityType":"parttime",
+					"charge":"0",
+					"description":"job for sse",
+					"experience":"fresher",
+					"skills":"python, Hibernate, struts, Kafka",
+					"currency" : "USD" 
+				}
+			]
+		},
+		{
+			"state":"Karnataka",
+			"province": "Bangalore",
+			"country": "India",
+			"description": "Bangalore location",
+			"phoneNumber": "+4434556480",
+			"jobs": [
+				{
+					"jobTitle":"Marketing Manger",
+					"jobType":"Marketing",
+					"availabilityType":"hourly",
+					"charge":"10",
+					"description":"job for marketing",
+					"experience":"EXPERT",
+					"skills":"Cold Calls, marketing, customer engagement",
+					"currency" : "USD" 
+				},
+				{
+					"jobTitle":"Software Engineer",
+					"jobType":"IT",
+					"availabilityType":"parttime",
+					"charge":"0",
+					"description":"job for sse",
+					"experience":"fresher",
+					"skills":"python, Hibernate, struts, Kafka",
+					"currency" : "INR" 
+				},
+				{
+					"jobTitle":"UX Designer",
+					"jobType":"IT",
+					"availabilityType":"parttime",
+					"charge":"0",
+					"description":"job for UX",
+					"experience":"fresher",
+					"skills":"wireframe, UI",
+					"currency" : "USD" 
+				}
+			]
+		}
+		
+	]
+}

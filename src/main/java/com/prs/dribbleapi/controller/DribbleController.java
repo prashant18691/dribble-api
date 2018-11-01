@@ -29,8 +29,11 @@ import com.prs.dribbleapi.vo.CompanyVO;
 import com.prs.dribbleapi.vo.DribbleVO;
 import com.prs.dribbleapi.vo.JobVO;
 import com.prs.dribbleapi.vo.LocationVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 
+@Api(tags = "Dribble API Rest Controller")
 @RestController
 @RequestMapping("dribble")
 public class DribbleController {
@@ -41,7 +44,7 @@ public class DribbleController {
     @Autowired
     private KafkaTemplate<String, CompanyVO> kafkaTemplate;
     private static final String TOPIC = "kafka_dribble_topic";
-
+    @ApiOperation(value = "Save Json Jobs", notes = "Saves Json job details directly to database")
     @PostMapping("/save")
     public ResponseEntity save(@RequestBody CompanyVO company){
         try {
@@ -53,7 +56,7 @@ public class DribbleController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
-
+    @ApiOperation(value = "Search Jobs Json Jobs", notes = "An Api to search jobs")
     @PostMapping("/search")
     public ResponseEntity search(@RequestBody SearchRequest request){
         List<DribbleVO> companyList = null;
@@ -68,7 +71,8 @@ public class DribbleController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @ApiOperation(value = "Upload Job details", notes = "Upload Job details using excel sheet"
+            + "directly to database")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity upload(@RequestPart("file")MultipartFile file){
         String message = null;
