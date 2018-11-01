@@ -51,10 +51,10 @@ public class DribbleDaoImpl implements DribbleDao{
             }
             if (searchRequest.getJobType()!=null){
                 if (filters.length()>0){
-                    filters.append(" and j.jobType like '%"+searchRequest.getJobType()+"%'");
+                    filters.append(" and lower(j.jobType) like lower('%"+searchRequest.getJobType()+"%')");
                 }
                 else
-                    filters.append(" j.jobType like '%"+searchRequest.getJobType()+"%'");
+                    filters.append(" lower(j.jobType) like lower('%"+searchRequest.getJobType()+"%')");
             }
             if (searchRequest.getSkillsCriteria()!=null){
                 if (filters.length()>0){
@@ -66,22 +66,22 @@ public class DribbleDaoImpl implements DribbleDao{
             }
             if (searchRequest.getJobTitle()!=null){
                 if (filters.length()>0){
-                    filters.append(" and j.jobTitle like '%"+searchRequest.getJobTitle()+"%'");
+                    filters.append(" and lower(j.jobTitle) like lower('%"+searchRequest.getJobTitle()+"%')");
                 }
                 else
-                    filters.append(" j.jobTitle like '%"+searchRequest.getJobTitle()+"%'");
+                    filters.append(" lower(j.jobTitle) like lower('%"+searchRequest.getJobTitle()+"%')");
             }
             if (searchRequest.getLocation()!=null){
                 String filterValue = "%"+searchRequest.getLocation()+"%";
                 if (filters.length()>0){
-                    filters.append(" and (l.country like '"+filterValue+"' or l.state like '"+filterValue+"' or l"
-                            + ".province "
-                            + "like '"+filterValue+ "')");
+                    filters.append(" and (lower(l.country) like lower('"+filterValue+"') or lower(l.state) like "
+                            + "lower('"+filterValue+"') or lower(l.province) "
+                            + "like lower('"+filterValue+ "'))");
                 }
                 else
-                    filters.append(" (l.country like '"+filterValue+"' or l.state like '"+filterValue+"' or l"
-                            + ".province "
-                            + "like '"+filterValue+ "')");
+                    filters.append(" (lower(l.country) like lower('"+filterValue+"') or lower(l.state) like "
+                            + "lower('"+filterValue+"') or lower(l.province) "
+                            + "like lower('"+filterValue+ "'))");
             }
             if (searchRequest.getPayRateto()!=0){
                 if (filters.length()>0){
