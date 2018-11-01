@@ -237,8 +237,8 @@ public class DribbleHelper {
                     Set<Location> locationList = new HashSet<>();
                     for (LocationVO locationVO : companyVO.getLocations()) {
                         Location location = new Location(locationVO.getState(), locationVO.getProvince(),
-                                locationVO.getCountry(), locationVO.getDescription(), locationVO.getPhoneNumber());
-                        location.setCompany(company);
+                                locationVO.getCountry(), locationVO.getDescription(), locationVO.getPhoneNumber(),
+                                company);
                         if (!CollectionUtils.isEmpty(locationVO.getJobs())) {
                             Set<Job> jobList = new HashSet<>();
                             for (JobVO jobVO : locationVO.getJobs()) {
@@ -246,8 +246,7 @@ public class DribbleHelper {
                                         String.valueOf(jobVO.getAvailability())
                                         , jobVO.getCharge(), jobVO.getCurrency(),jobVO.getDescription(),
                                         String.valueOf(jobVO.getExpLevel()),new Date(),
-                                        jobVO.getSkills());
-                                job.setLocation(location);
+                                        jobVO.getSkills(),location);
                                 jobList.add(job);
                             }
                             location.setJobs(jobList);

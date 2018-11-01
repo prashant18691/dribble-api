@@ -1,14 +1,11 @@
 package com.prs.dribbleapi.controller;
 
-import static com.prs.dribbleapi.helper.DribbleHelper.createCompanyObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import javax.xml.bind.ValidationException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,9 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.prs.dribbleapi.dto.Company;
-import com.prs.dribbleapi.dto.Job;
-import com.prs.dribbleapi.dto.Location;
 import com.prs.dribbleapi.helper.DribbleHelper;
 import com.prs.dribbleapi.request.SearchRequest;
 import com.prs.dribbleapi.service.DribbleService;

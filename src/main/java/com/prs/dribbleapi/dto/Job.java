@@ -2,15 +2,13 @@ package com.prs.dribbleapi.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,8 +19,6 @@ import javax.validation.constraints.NotNull;
 @Table(name = "JOB_DETAILS")
 public class Job implements Serializable{
     @Id
-    @SequenceGenerator(name="SEQ_JOB", sequenceName="SEQ_GEN_JOB", allocationSize=1)
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_JOB")
     private Integer jobId;
     @NotNull
     @Column(unique = true)
@@ -55,7 +51,7 @@ public class Job implements Serializable{
     public Job(@NotNull final String jobTitle, @NotNull final String jobType,
             @NotNull final String availability, @NotNull final String charge,
             @NotNull final String currency, @NotNull final String description,
-            @NotNull final String expLevel, @NotNull final Date postedOn, @NotNull final String skills) {
+            @NotNull final String expLevel, @NotNull final Date postedOn, @NotNull final String skills, Location location) {
         this.jobTitle = jobTitle;
         this.jobType = jobType;
         this.availability = availability;
@@ -65,6 +61,8 @@ public class Job implements Serializable{
         this.expLevel = expLevel;
         this.postedOn = postedOn;
         this.skills = skills;
+        this.location = location;
+        this.jobId = Objects.hash(jobTitle,jobType,availability,expLevel,location.getLocationId());
     }
 
     public String getJobTitle() {
@@ -153,5 +151,18 @@ public class Job implements Serializable{
 
     public void setExpLevel(final String expLevel) {
         this.expLevel = expLevel;
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(getJobTitle(),getJobType(),getAvailability(),getExpLevel(),getLocation().getLocationId());
+    }
+
+    @Override public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Job)) return false;
+        Job that = (Job) obj;
+        return Objects.equals(getJobTitle(),that.getJobTitle()) && Objects.equals(getJobType(),that.getJobType()) &&
+                Objects.equals(getAvailability(),that.getAvailability()) && Objects.equals(getExpLevel(),that
+                .getExpLevel()) && Objects.equals(getLocation().getLocationId(),that.getLocation().getLocationId());
     }
 }

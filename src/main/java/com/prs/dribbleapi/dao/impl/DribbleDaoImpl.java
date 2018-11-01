@@ -101,37 +101,25 @@ public class DribbleDaoImpl implements DribbleDao{
     }
 
     @Override public void save(final Company company) {
-        String searchCompany = "select c from Company c where c.companyName = :cName";
-        Company companyDb = em.createQuery(searchCompany, Company.class).
-                setParameter("cName",company.getCompanyName()).getResultList().stream().findFirst().orElse(null);
-        if (companyDb==null) {
+        String searchCompany = "select count(c) from Company c where c.companyId = :cCompanyId";
+        Long companyCount = em.createQuery(searchCompany, Long.class).
+                setParameter("cCompanyId",company.getCompanyId()).getSingleResult();
+        if (companyCount==0) {
             em.persist(company);
         }
         else {
             for (Location eachLocation : company.getLocations()){
-                String searchLocation = "select l from Location l where l.state = :cState and l.province = :cProvince "
-                        + "and l.company.companyId = :cCompanyId";
-                Location locationDb = em.createQuery(searchLocation, Location.class).setParameter("cState",eachLocation
-                        .getState()).setParameter("cProvince",eachLocation.getProvince()).
-                        setParameter("cCompanyId",companyDb.getCompanyId()).getResultList().stream().findFirst()
-                        .orElse(null);
-                if (locationDb==null){
-                    eachLocation.setCompany(companyDb);
+                String searchLocation = "select count(l) from Location l where l.locationId = :cLocationId";
+                Long locationCount = em.createQuery(searchLocation, Long.class).setParameter("cLocationId",
+                        eachLocation.getLocationId()).getSingleResult();
+                if (locationCount==0){
                     em.persist(eachLocation);
                 }
                 else {
                     for (Job eachJob : eachLocation.getJobs()){
-                        String searchJob = "select j from Job j where j.jobTitle = :cJobTitle and j.jobType = :cJobType"
-                                + " and j.availability = :cAvailability and j.expLevel = :cExpLevel and j.location"
-                                + ".locationId = :cLocationId";
-                        Job jobDb = em.createQuery(searchJob, Job.class).setParameter("cJobTitle",eachJob.getJobTitle())
-                                .setParameter("cJobType",eachJob.getJobType())
-                                .setParameter("cAvailability",eachJob.getAvailability())
-                                .setParameter("cExpLevel",eachJob.getExpLevel()).setParameter
-                                        ("cLocationId",locationDb.getLocationId()).getResultList().stream()
-                                .findFirst().orElse(null);
-                        if (jobDb==null){
-                            eachJob.setLocation(locationDb);
+                        String searchJob = "select count(j) from Job j where j.jobId = :cJobId";
+                        Long jobCount = em.createQuery(searchJob, Long.class).setParameter("cJobId",eachJob.getJobId()).getSingleResult();
+                        if (jobCount==0){
                             em.persist(eachJob);
                         }
                     }

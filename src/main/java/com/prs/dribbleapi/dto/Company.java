@@ -1,23 +1,19 @@
 package com.prs.dribbleapi.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 
 @Entity
 public class Company implements Serializable{
     @Id
-    @SequenceGenerator(name="SEQ_COMPANY", sequenceName="SEQ_GEN_COMPANY", allocationSize=1)
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_COMPANY")
     private Integer companyId;
     @NotNull
     private String companyName;
@@ -35,6 +31,7 @@ public class Company implements Serializable{
         this.companyName = companyName;
         this.description = description;
         this.mainPhoneNumber = mainPhoneNumber;
+        this.companyId = Objects.hash(companyName);
     }
 
     public Company() {
@@ -78,5 +75,16 @@ public class Company implements Serializable{
 
     public void setLocations(final Set<Location> locations) {
         this.locations = locations;
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(getCompanyName());
+    }
+
+    @Override public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Company)) return false;
+        Company that = (Company) obj;
+        return Objects.equals(getCompanyName(),that.getCompanyName());
     }
 }
