@@ -54,11 +54,11 @@ public class Location implements Serializable{
         this.phoneNumber = phoneNumber;
     }
 
-    Integer getLocationId() {
+    public Integer getLocationId() {
         return locationId;
     }
 
-    void setLocationId(final Integer locationId) {
+    public void setLocationId(final Integer locationId) {
         this.locationId = locationId;
     }
 
