@@ -71,27 +71,26 @@ public class DribbleController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity upload(@RequestPart("file")MultipartFile file){
+        String message = null;
         try {
+            if(file.getContentType().equalsIgnoreCase
+                    ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")){
             InputStream inputStream = file.getInputStream();
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
             XSSFSheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
-            String message = null;
-            while (rowIterator.hasNext()){
-                Row row = rowIterator.next();
-                Iterator<Cell> cellIterator = row.cellIterator();
-                CompanyVO company = DribbleHelper.createCompanyObject(cellIterator);
-                LocationVO location = DribbleHelper.createLocationObject(cellIterator);
-                JobVO job = DribbleHelper.createJobObject(cellIterator);
-                List<LocationVO> locationList = new ArrayList<>();
-                List<JobVO> jobList = new ArrayList<>();
-                jobList.add(job);
-                location.setJobs(jobList);
-                locationList.add(location);
-                company.setLocations(locationList);
-                message = publish(company);
+                while (rowIterator.hasNext()) {
+                    Row row = rowIterator.next();
+                    Iterator<Cell> cellIterator = row.cellIterator();
+                    CompanyVO company = DribbleHelper.createCompanyObject(cellIterator);
+                    LocationVO location = DribbleHelper.createLocationObject(cellIterator);
+                    JobVO job = DribbleHelper.createJobObject(cellIterator);
+                    message = buildVoAndPublish(company, location, job);
+                }
+
+                return ResponseEntity.ok(message);
             }
-            return ResponseEntity.ok(message);
+            return ResponseEntity.badRequest().body("Only .xlsx file type are supported");
         } catch (IOException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -103,7 +102,17 @@ public class DribbleController {
         }
     }
 
-
+    public String buildVoAndPublish(final CompanyVO company, final LocationVO location, final JobVO job)
+            throws ValidationException {
+        final String message;List<LocationVO> locationList = new ArrayList<>();
+        List<JobVO> jobList = new ArrayList<>();
+        jobList.add(job);
+        location.setJobs(jobList);
+        locationList.add(location);
+        company.setLocations(locationList);
+        message = publish(company);
+        return message;
+    }
 
     private String publish(CompanyVO company) throws ValidationException {
         DribbleHelper.validateAndEnrichPostRequest(company);
