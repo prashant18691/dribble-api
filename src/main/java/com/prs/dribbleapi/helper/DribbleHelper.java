@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.xml.bind.ValidationException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.util.CollectionUtils;
@@ -52,12 +51,6 @@ public class DribbleHelper {
             skillsCriteria.deleteCharAt(skillsCriteria.length()-1).append(")");
             request.setSkillsCriteria(skillsCriteria.toString());
         }
-        if (request.getPayRateto()!=0){
-            request.setPayRateto(request.getPayRateto()*100);
-        }
-        if (request.getPayRatefrom()!=0){
-            request.setPayRatefrom(request.getPayRatefrom()*100);
-        }
         if (request.getPayRateto() < request.getPayRatefrom()){
             throw new ValidationException("payRateto must be greater than payRateFrom");
         }
@@ -71,27 +64,41 @@ public class DribbleHelper {
     public static void validateAndEnrichPostRequest(CompanyVO request) throws ValidationException {
         if (request==null)
             throw new ValidationException("Request body is empty");
+        if (StringUtils.isEmpty(request.getCompanyName()))
+            throw new ValidationException("Company Name cannot be empty");
         List<LocationVO> locations = request.getLocations();
         if (CollectionUtils.isEmpty(locations)){
             throw new ValidationException("locations cannot be empty");
         }
             for (LocationVO eachLocation:locations){
+                if (StringUtils.isEmpty(eachLocation.getState()))
+                    throw new ValidationException("State cannot be empty");
+                if (StringUtils.isEmpty(eachLocation.getProvince()))
+                    throw new ValidationException("Province cannot be empty");
                 List<JobVO> jobs = eachLocation.getJobs();
                 for (JobVO eachJob : jobs){
+                    if (StringUtils.isEmpty(eachJob.getJobTitle()))
+                        throw new ValidationException("Job Title cannot be empty");
+                    if (StringUtils.isEmpty(eachJob.getJobType()))
+                        throw new ValidationException("Job Type cannot be empty");
+                    if (StringUtils.isEmpty(eachJob.getAvailabilityType()))
+                        throw new ValidationException("Availability Type cannot be empty");
+                    if (StringUtils.isEmpty(eachJob.getExperience()))
+                        throw new ValidationException("Experience cannot be empty");
                     eachJob.setAvailability(validateAvailabilityType(eachJob.getAvailabilityType()));
 
                     if (eachJob.getAvailabilityType().equalsIgnoreCase("HOURLY")) {
                         String charge = eachJob.getCharge();
                         if(charge==null)
                             throw new ValidationException("charge cannot be null for availabilityType : HOURLY");
-                        Integer simplifyAmount = isValidAmount(eachJob.getCharge())*100;
+                        Integer simplifyAmount = isValidAmount(eachJob.getCharge());
                         eachJob.setCharge(String.valueOf(simplifyAmount));
                     }
 
                     if (eachJob.getAvailabilityType().equalsIgnoreCase("PARTTIME"))
-                        eachJob.setCharge(String.valueOf(2000));
+                        eachJob.setCharge(String.valueOf(20));
                     else
-                        eachJob.setCharge(String.valueOf(4000));
+                        eachJob.setCharge(String.valueOf(40));
                     eachJob.setExpLevel(validateExpLevel(eachJob.getExperience()));
                 }
             }
@@ -166,27 +173,36 @@ public class DribbleHelper {
         return dribbleVOS;
     }
 
-    public static CompanyVO createCompanyObject(final Iterator<Cell> cellIterator) {
+    public static CompanyVO createCompanyObject(final Iterator<Cell> cellIterator) throws ValidationException {
         CompanyVO company = new CompanyVO();
         if (cellIterator.hasNext())
             company.setCompanyName(String.valueOf(cellIterator.next()));
         if (cellIterator.hasNext())
             company.setDescription(String.valueOf(cellIterator.next()));
-        if (cellIterator.hasNext())
-            company.setMainPhoneNumber(String.valueOf(new BigDecimal(String.valueOf(cellIterator.next()))
-                    .toBigInteger()));
-
+        try {
+            if (cellIterator.hasNext())
+                company.setMainPhoneNumber(String.valueOf(new BigDecimal(String.valueOf(cellIterator.next()))
+                        .toBigInteger()));
+        }
+        catch (NumberFormatException ex){
+            throw new ValidationException("Enter a valid phone number");
+        }
         return company;
     }
 
-    public static LocationVO createLocationObject(final Iterator<Cell> cellIterator) {
+    public static LocationVO createLocationObject(final Iterator<Cell> cellIterator) throws ValidationException {
         LocationVO location = new LocationVO();
         if (cellIterator.hasNext()){
             location.setState(String.valueOf(cellIterator.next()));
         }
-        if (cellIterator.hasNext()){
-            location.setPhoneNumber(String.valueOf(new BigDecimal(String.valueOf(cellIterator.next()))
-                    .toBigInteger()));
+        try {
+            if (cellIterator.hasNext()) {
+                location.setPhoneNumber(String.valueOf(new BigDecimal(String.valueOf(cellIterator.next()))
+                        .toBigInteger()));
+            }
+        }
+        catch (NumberFormatException ex){
+            throw new ValidationException("Enter a valid phone number");
         }
         if (cellIterator.hasNext()){
             location.setDescription(String.valueOf(cellIterator.next()));
